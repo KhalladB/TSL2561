@@ -118,7 +118,7 @@ class Tsl2561: public Module {
   unsigned int b;
   unsigned int m;
   unsigned long temp;
-  // unsigned long lux;
+  unsigned long lux;
   
  // Added from sensor_tsl2561
   String lux_instruction_code_;
