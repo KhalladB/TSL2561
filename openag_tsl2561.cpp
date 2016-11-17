@@ -40,6 +40,7 @@ Tsl2561::Tsl2561(int i2c_address) {
 void Tsl2561::begin(){
   // from original code
   Serial3.begin(9600);
+  Serial3.println("Hi");
   Wire.begin();
   writeRegister(_i2c_address,TSL2561_Control,0x03);  // POWER UP
   writeRegister(_i2c_address,TSL2561_Timing,0x00);  //No High Gain (1x), integration time of 13ms
@@ -55,6 +56,7 @@ void Tsl2561::begin(){
 
 void Tsl2561::update() {
   if (millis() - _time_of_last_query > _min_update_interval) {
+    Serial3.println("update");
     readSensorData();
    _time_of_last_query = millis();
   }
@@ -69,8 +71,9 @@ bool Tsl2561::get_light_illuminance(std_msgs::Float32 &msg) {
 }
 
 //.............................................. Private ..........................................//
-void Tsl2561::readSensorData()
+float Tsl2561::readSensorData(void)
 {
+  Serial3.println("readSensorData");
   writeRegister(_i2c_address,TSL2561_Control,0x03);  // POWER UP
   delay(14);
   float lux_average = 0;
@@ -88,42 +91,25 @@ void Tsl2561::readSensorData()
       return;  //ch0 out of range, but ch1 not. the lux is not valid in this situation.
     }
     lux_average += (float) calculateLux(0, 0, 0);
+    Serial3.println(lux_average);
   }
   lux_average /= samples;
+  Serial3.print(lux_average);
+  Serial3.print(' ');
   lux_ = lux_average*calibrtion_to_vernier_lux_;
+  Serial3.print(lux_);
+  Serial3.print(' ');
   par_ = lux_average*calibration_to_vernier_par_*measuring_indoor_par_correction_;
+  _send_light_illuminance = true;
+  _light_illuminance = lux_;
+  Serial3.println(_light_illuminance);
+  return (_light_illuminance);
   writeRegister(_i2c_address,TSL2561_Control,0x00);  // POWER Down
-}
-
-uint8_t Tsl2561::readRegister(int deviceAddress, int address)
-{
-  uint8_t value;
-  Wire.beginTransmission(deviceAddress);
-  Wire.write(address);                // register to read
-  Wire.endTransmission();
-  Wire.requestFrom(deviceAddress, 1); // read a byte
-  uint32_t start_time = millis();
-  while(!Wire.available()){
-    if (millis() - start_time > read_register_timeout_) {
-      read_register_error_ = 1;
-      return 0;
-    }
-  }
-  value = Wire.read();
-  return value;
-}
-
-void Tsl2561::writeRegister(int deviceAddress, int address, uint8_t val)
-{
-  Wire.beginTransmission(deviceAddress);  // start transmission to device
-  Wire.write(address);                    // send register address
-  Wire.write(val);                        // send value to write
-  Wire.endTransmission();                 // end transmission
-  //delay(100);
 }
 
 void Tsl2561::getLux(void)
 {
+  //Serial3.println("getLux");
   CH0_LOW=readRegister(_i2c_address,TSL2561_Channal0L);
   CH0_HIGH=readRegister(_i2c_address,TSL2561_Channal0H);
   
@@ -137,6 +123,7 @@ void Tsl2561::getLux(void)
 
 unsigned long Tsl2561::calculateLux(unsigned int iGain, unsigned int tInt,int iType)
 {
+ //Serial3.println("calculateLux");
  switch (tInt)
  {
   case 0:  // 13.7 msec
@@ -148,7 +135,7 @@ unsigned long Tsl2561::calculateLux(unsigned int iGain, unsigned int tInt,int iT
   default: // assume no scaling
   chScale = (1 << CH_SCALE);
   break;
-}
+ }
 if (!iGain)  chScale = chScale << 4; // scale 1X to 16X
 // scale the channel values
 channel0 = (ch0 * chScale) >> CH_SCALE;
@@ -199,9 +186,37 @@ channel1 = (ch1 * chScale) >> CH_SCALE;
   if(temp<0) temp=0;
   temp+=(1<<(LUX_SCALE-1));
   // strip off fractional portion
-  _send_light_illuminance = true;
-  _light_illuminance = temp>>LUX_SCALE;
-  return (_light_illuminance);
-  
-  Serial3.println(_light_illuminance);
- }
+  unsigned long lux = temp>>LUX_SCALE;
+  Serial3.print(lux);
+  Serial3.print(' ');
+  return (lux);
+}
+
+uint8_t Tsl2561::readRegister(int deviceAddress, int address)
+{
+  //Serial3.println("readRegister");
+  uint8_t value;
+  Wire.beginTransmission(deviceAddress);
+  Wire.write(address);                // register to read
+  Wire.endTransmission();
+  Wire.requestFrom(deviceAddress, 1); // read a byte
+  uint32_t start_time = millis();
+  while(!Wire.available()){
+    if (millis() - start_time > read_register_timeout_) {
+      read_register_error_ = 1;
+      return 0;
+    }
+  }
+  value = Wire.read();
+  return value;
+}
+
+void Tsl2561::writeRegister(int deviceAddress, int address, uint8_t val)
+{
+  //Serial3.println("writeRegister");
+  Wire.beginTransmission(deviceAddress);  // start transmission to device
+  Wire.write(address);                    // send register address
+  Wire.write(val);                        // send value to write
+  Wire.endTransmission();                 // end transmission
+  //delay(100);
+}
