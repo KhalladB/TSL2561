@@ -105,7 +105,7 @@ class Tsl2561: public Module {
   void writeRegister(int deviceAddress, int address, uint8_t val);
   
   //
-  float readSensorData();
+  void readSensorData();
   
   
   // Added from the original code
