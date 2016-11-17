@@ -106,7 +106,7 @@ class Tsl2561: public Module {
   
   //
   void readSensorData();
-  
+  float getReading();
   
   // Added from the original code
   uint8_t CH0_LOW,CH0_HIGH,CH1_LOW,CH1_HIGH;
