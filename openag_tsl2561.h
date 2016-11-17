@@ -99,13 +99,13 @@ class Tsl2561: public Module {
   
   private:
   // Added from dht22 example
-  void getLux(void);
+  void getLux();
   unsigned long calculateLux(unsigned int iGain, unsigned int tInt,int iType);
   uint8_t readRegister(int deviceAddress, int address);
   void writeRegister(int deviceAddress, int address, uint8_t val);
   
   //
-  void readSensorData();
+  float readSensorData(void);
   
   
   // Added from the original code
