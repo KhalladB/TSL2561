@@ -90,7 +90,14 @@ void Tsl2561::readSensorData()
   lux_average /= samples;
   lux_ = lux_average*calibration_to_vernier_lux_;
   par_ = lux_average*calibration_to_vernier_par_*measuring_indoor_par_correction_;
+  getData();
   writeRegister(_TSL2561_Address,TSL2561_Control,0x00);  // POWER Down
+}
+
+float Tsl2561::getData(void){
+   _light_illuminance = lux_;
+   return (_light_illuminance);
+   delay(1000);
 }
 
 uint8_t Tsl2561::readRegister(int deviceAddress, int address)
@@ -199,6 +206,5 @@ channel1 = (ch1 * chScale) >> CH_SCALE;
   // strip off fractional portion
   _send_light_illuminance = true;
   _light_illuminance = temp>>LUX_SCALE;
-  return (_light_illuminance);
-  delay(1000);
+  //return (_light_illuminance);
  }
