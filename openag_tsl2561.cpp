@@ -60,7 +60,7 @@ void Tsl2561::update() {
 
 
 bool Tsl2561::get_light_illuminance(std_msgs::Float32 &msg) {
-  //delay(2500);
+  delay(2500);
   msg.data = _light_illuminance;
   bool res = _light_illuminance;
   _send_light_illuminance = false;
