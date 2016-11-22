@@ -60,6 +60,7 @@ void Tsl2561::update() {
 
 
 bool Tsl2561::get_light_illuminance(std_msgs::Float32 &msg) {
+  delay(2500);
   msg.data = _light_illuminance;
   bool res = _light_illuminance;
   _send_light_illuminance = false;
@@ -109,12 +110,12 @@ uint8_t Tsl2561::readRegister(int deviceAddress, int address)
   Wire.endTransmission();
   Wire.requestFrom(deviceAddress, 1); // read a byte
   uint32_t start_time = millis();
-  while(!Wire.available()){
+  //while(!Wire.available()){
     if (millis() - start_time > read_register_timeout_) {
       read_register_error_ = 1;
       return 0;
     }
-  }
+  //}
   value = Wire.read();
   return value;
 }
