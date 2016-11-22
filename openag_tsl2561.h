@@ -87,7 +87,7 @@ class Tsl2561: public Module {
   // void writeRegister(int deviceAddress, int address, uint8_t val);
   
   // Added from dht22 example
-  Tsl2561(int i2c_Address);
+  Tsl2561(int _TSL2561_Address);
   void begin();
   bool get_light_illuminance(std_msgs::Float32 &msg);
   void update();
@@ -95,18 +95,19 @@ class Tsl2561: public Module {
   // form tsl2561_Sensor
   int lux_; // lux
   float par_; // (umol)*(m^-2)*(s^-1)
-  //unsigned long avrg_lux;
+
   
   private:
   // Added from dht22 example
-  void getLux();
+  void getLux(void);
   unsigned long calculateLux(unsigned int iGain, unsigned int tInt,int iType);
   uint8_t readRegister(int deviceAddress, int address);
   void writeRegister(int deviceAddress, int address, uint8_t val);
   
   //
-  float readSensorData();
-  //float getReading();
+  void readSensorData();
+  float getData();
+  
   
   // Added from the original code
   uint8_t CH0_LOW,CH0_HIGH,CH1_LOW,CH1_HIGH;
@@ -118,13 +119,14 @@ class Tsl2561: public Module {
   unsigned int b;
   unsigned int m;
   unsigned long temp;
+  // unsigned long lux;
   
  // Added from sensor_tsl2561
   String lux_instruction_code_;
   int lux_instruction_id_;
   String par_instruction_code_;
   int par_instruction_id_;
-  float calibrtion_to_vernier_lux_;
+  float calibration_to_vernier_lux_;
   float calibration_to_vernier_par_;
   float measuring_indoor_par_correction_; //reduction by 14%
   uint32_t read_register_timeout_;
@@ -136,7 +138,7 @@ class Tsl2561: public Module {
   uint32_t _time_of_last_query;
   bool _waiting_for_conversion;
   const static uint32_t _min_update_interval = 2500;
-  int _i2c_address = TSL2561_Address;
+  int _TSL2561_Address = TSL2561_Address;
   
 };
 #endif
