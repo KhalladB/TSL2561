@@ -32,7 +32,7 @@
 #include "openag_tsl2561.h"
 
 Tsl2561::Tsl2561(int i2c_Address) {
-  int _i2c_Address = i2c_Address;
+  _i2c_Address = i2c_Address;
   status_level = OK;
   status_msg = "";
 }
