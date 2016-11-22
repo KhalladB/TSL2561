@@ -108,7 +108,7 @@ class Tsl2561: public Module {
   float getData();
   
 
-  float readSensorData();
+  //float readSensorData();
   //float getReading();
   
   // Added from the original code
