@@ -38,11 +38,8 @@ Tsl2561::Tsl2561(int _TSL2561_Address) {
 
 void Tsl2561::begin(){
   // from original code
-<<<<<<< HEAD
-=======
-  Serial3.begin(9600);
-  Serial3.println("Hi");
->>>>>>> master
+  //Serial3.begin(9600);
+  //Serial3.println("Hi");
   Wire.begin();
   writeRegister(_TSL2561_Address,TSL2561_Control,0x03);  // POWER UP
   writeRegister(_TSL2561_Address,TSL2561_Timing,0x00);  //No High Gain (1x), integration time of 13ms
@@ -58,7 +55,7 @@ void Tsl2561::begin(){
 
 void Tsl2561::update() {
   if (millis() - _time_of_last_query > _min_update_interval) {
-    Serial3.println("update");
+    //Serial3.println("update");
     readSensorData();
    _time_of_last_query = millis();
   }
@@ -76,12 +73,9 @@ bool Tsl2561::get_light_illuminance(std_msgs::Float32 &msg) {
 //.............................................. Private ..........................................//
 float Tsl2561::readSensorData(void)
 {
-<<<<<<< HEAD
   writeRegister(_TSL2561_Address,TSL2561_Control,0x03);  // POWER UP
-=======
-  Serial3.println("readSensorData");
+  //Serial3.println("readSensorData");
   writeRegister(_i2c_address,TSL2561_Control,0x03);  // POWER UP
->>>>>>> master
   delay(14);
   float lux_average = 0;
   float samples = 40;
@@ -98,10 +92,9 @@ float Tsl2561::readSensorData(void)
       return;  //ch0 out of range, but ch1 not. the lux is not valid in this situation.
     }
     lux_average += (float) calculateLux(0, 0, 0);
-    Serial3.println(lux_average);
+    //Serial3.println(lux_average);
   }
   lux_average /= samples;
-<<<<<<< HEAD
   lux_ = lux_average*calibration_to_vernier_lux_;
   par_ = lux_average*calibration_to_vernier_par_*measuring_indoor_par_correction_;
   getData();
@@ -146,16 +139,16 @@ void Tsl2561::getLux(void)
 {
   CH0_LOW=readRegister(_TSL2561_Address,TSL2561_Channal0L);
   CH0_HIGH=readRegister(_TSL2561_Address,TSL2561_Channal0H);
-=======
-  Serial3.print(lux_average);
-  Serial3.print(' ');
+
+  //Serial3.print(lux_average);
+  //Serial3.print(' ');
   lux_ = lux_average*calibrtion_to_vernier_lux_;
-  Serial3.print(lux_);
-  Serial3.print(' ');
+  //Serial3.print(lux_);
+  //Serial3.print(' ');
   par_ = lux_average*calibration_to_vernier_par_*measuring_indoor_par_correction_;
   _send_light_illuminance = true;
   _light_illuminance = lux_;
-  Serial3.println(_light_illuminance);
+  //Serial3.println(_light_illuminance);
   return (_light_illuminance);
   writeRegister(_i2c_address,TSL2561_Control,0x00);  // POWER Down
 }
@@ -165,7 +158,6 @@ void Tsl2561::getLux(void)
   //Serial3.println("getLux");
   CH0_LOW=readRegister(_i2c_address,TSL2561_Channal0L);
   CH0_HIGH=readRegister(_i2c_address,TSL2561_Channal0H);
->>>>>>> master
   
   //read two bytes from registers 0x0E and 0x0F
   CH1_LOW=readRegister(_TSL2561_Address,TSL2561_Channal1L);
@@ -240,18 +232,16 @@ channel1 = (ch1 * chScale) >> CH_SCALE;
   if(temp<0) temp=0;
   temp+=(1<<(LUX_SCALE-1));
   // strip off fractional portion
-<<<<<<< HEAD
   lux = temp>>LUX_SCALE;
   return (lux);
  }
-=======
   unsigned long lux = temp>>LUX_SCALE;
-  Serial3.print(lux);
-  Serial3.print(' ');
+  //Serial3.print(lux);
+  //Serial3.print(' ');
   return (lux);
 }
 
-uint8_t Tsl2561::readRegister(int deviceAddress, int address)
+/*uint8_t Tsl2561::readRegister(int deviceAddress, int address)
 {
   //Serial3.println("readRegister");
   uint8_t value;
@@ -278,5 +268,4 @@ void Tsl2561::writeRegister(int deviceAddress, int address, uint8_t val)
   Wire.write(val);                        // send value to write
   Wire.endTransmission();                 // end transmission
   //delay(100);
-}
->>>>>>> master
+}*/
