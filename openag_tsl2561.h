@@ -141,9 +141,7 @@ class Tsl2561: public Module {
   uint32_t _time_of_last_query;
   bool _waiting_for_conversion;
   const static uint32_t _min_update_interval = 2500;
-  int i2c_Address;
-  int _i2c_Address;
-  i2c_Address = _i2c_Address = TSL2561_Address;
-  
+  int i2c_Address = TSL2561_Address;
+  int _i2c_Address = _i2c_Address;  
 };
 #endif
