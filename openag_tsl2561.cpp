@@ -137,24 +137,6 @@ void Tsl2561::writeRegister(int deviceAddress, int address, uint8_t val)
 
 void Tsl2561::getLux(void)
 {
-  CH0_LOW=readRegister(_TSL2561_Address,TSL2561_Channal0L);
-  CH0_HIGH=readRegister(_TSL2561_Address,TSL2561_Channal0H);
-
-  //Serial3.print(lux_average);
-  //Serial3.print(' ');
-  lux_ = lux_average*calibrtion_to_vernier_lux_;
-  //Serial3.print(lux_);
-  //Serial3.print(' ');
-  par_ = lux_average*calibration_to_vernier_par_*measuring_indoor_par_correction_;
-  _send_light_illuminance = true;
-  _light_illuminance = lux_;
-  //Serial3.println(_light_illuminance);
-  return (_light_illuminance);
-  writeRegister(_i2c_address,TSL2561_Control,0x00);  // POWER Down
-}
-
-void Tsl2561::getLux(void)
-{
   //Serial3.println("getLux");
   CH0_LOW=readRegister(_i2c_address,TSL2561_Channal0L);
   CH0_HIGH=readRegister(_i2c_address,TSL2561_Channal0H);
@@ -235,10 +217,6 @@ channel1 = (ch1 * chScale) >> CH_SCALE;
   lux = temp>>LUX_SCALE;
   return (lux);
  }
-  unsigned long lux = temp>>LUX_SCALE;
-  //Serial3.print(lux);
-  //Serial3.print(' ');
-  return (lux);
 }
 
 /*uint8_t Tsl2561::readRegister(int deviceAddress, int address)
