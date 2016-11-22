@@ -96,6 +96,7 @@ void Tsl2561::readSensorData()
 
 float Tsl2561::getData(void){
    _light_illuminance = lux_;
+   _send_light_illuminance = true;
    return (_light_illuminance);
    delay(1000);
 }
