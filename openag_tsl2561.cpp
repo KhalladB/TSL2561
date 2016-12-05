@@ -37,13 +37,11 @@ Tsl2561::Tsl2561(int _TSL2561_Address) {
 }
 
 void Tsl2561::begin(){
-  // from original code
   Wire.begin();
   writeRegister(_TSL2561_Address,TSL2561_Control,0x03);  // POWER UP
   writeRegister(_TSL2561_Address,TSL2561_Timing,0x00);  //No High Gain (1x), integration time of 13ms
   writeRegister(_TSL2561_Address,TSL2561_Interrupt,0x00);
   writeRegister(_TSL2561_Address,TSL2561_Control,0x00);  // POWER Down
-  // from dht22 example & sensor_tsl2561
   calibration_to_vernier_lux_ = 0.78;
   calibration_to_vernier_par_ = 0.02;
   measuring_indoor_par_correction_ = 0.86; //reduction by 14%
