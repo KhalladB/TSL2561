@@ -1,16 +1,12 @@
-// Added from dht22 example
 #ifndef OPENAG_TSL2561_H
 #define OPENAG_TSL2561_H
 
-// Added from orignal code
 #include <Arduino.h>
 #include <Wire.h>
 
-// Added from dht22 example 
 #include <openag_module.h>
 #include <std_msgs/Float32.h>
 
-// Added from the original code
 #define  TSL2561_Control  0x80
 #define  TSL2561_Timing   0x81
 #define  TSL2561_Interrupt 0x86
@@ -80,38 +76,24 @@
 
 class Tsl2561: public Module {
   public:
-  // Added from the original code
-  // void init(void);
-  // signed long readVisibleLux();
-  // uint8_t readRegister(int deviceAddress, int address);
-  // void writeRegister(int deviceAddress, int address, uint8_t val);
-  
-  // Added from dht22 example
-  Tsl2561(int i2c_Address);
+  Tsl2561(int _TSL2561_Address);
   void begin();
   bool get_light_illuminance(std_msgs::Float32 &msg);
   void update();
-  
-  // form tsl2561_Sensor
   int lux_; // lux
   float par_; // (umol)*(m^-2)*(s^-1)
-  unsigned long avrg_lux;
+
   
   private:
-  // Added from dht22 example
-  void getLux();
+  // Private Functions
+  void getLux(void);
   unsigned long calculateLux(unsigned int iGain, unsigned int tInt,int iType);
   uint8_t readRegister(int deviceAddress, int address);
   void writeRegister(int deviceAddress, int address, uint8_t val);
-  
   void readSensorData();
   float getData();
   
-
-  //float readSensorData();
-  //float getReading();
-  
-  // Added from the original code
+  // Private Variable
   uint8_t CH0_LOW,CH0_HIGH,CH1_LOW,CH1_HIGH;
   uint16_t ch0,ch1;
   unsigned long chScale;
@@ -121,10 +103,7 @@ class Tsl2561: public Module {
   unsigned int b;
   unsigned int m;
   unsigned long temp;
-  unsigned long lux;
-
-  
- // Added from sensor_tsl2561
+  unsigned long lux;  
   String lux_instruction_code_;
   int lux_instruction_id_;
   String par_instruction_code_;
@@ -134,14 +113,12 @@ class Tsl2561: public Module {
   float measuring_indoor_par_correction_; //reduction by 14%
   uint32_t read_register_timeout_;
   bool read_register_error_;
-  
-  // Added from dht22 example
   float _light_illuminance;
   bool _send_light_illuminance;
   uint32_t _time_of_last_query;
   bool _waiting_for_conversion;
   const static uint32_t _min_update_interval = 2500;
-  int i2c_Address = TSL2561_Address;
-  int _i2c_Address = _i2c_Address;  
+  int _TSL2561_Address = TSL2561_Address;
+  
 };
 #endif
