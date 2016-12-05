@@ -82,7 +82,7 @@ void Tsl2561::readSensorData()
     if(ch0/ch1 < 2 && ch0 > 4900)
     {
       lux_ = -1;
-      return;  //ch0 out of range, but ch1 not. the lux is not valid in this situation.
+      return;  //ch0 out of range, but ch1 not. the lux is not valid in this situation
     }
     lux_average += (float) calculateLux(0, 0, 0);
   }
