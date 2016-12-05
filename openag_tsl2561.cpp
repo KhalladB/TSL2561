@@ -31,7 +31,7 @@
 
 #include "openag_tsl2561.h"
 
-Tsl2561::Tsl2561(int _TSL2561_Address) {
+Tsl2561::Tsl2561(int _TSL2561_Address){
   status_level = OK;
   status_msg = "";
 }
@@ -50,14 +50,14 @@ void Tsl2561::begin(){
 }
 
 void Tsl2561::update() {
-  if (millis() - _time_of_last_query > _min_update_interval) {
+  if (millis() - _time_of_last_query > _min_update_interval){
     readSensorData();
    _time_of_last_query = millis();
   }
 }
 
 
-bool Tsl2561::get_light_illuminance(std_msgs::Float32 &msg) {
+bool Tsl2561::get_light_illuminance(std_msgs::Float32 &msg){
   delay(2500);
   msg.data = _light_illuminance;
   bool res = _light_illuminance;
@@ -66,8 +66,7 @@ bool Tsl2561::get_light_illuminance(std_msgs::Float32 &msg) {
 }
 
 //.............................................. Private ..........................................//
-void Tsl2561::readSensorData()
-{
+void Tsl2561::readSensorData(){
   writeRegister(_TSL2561_Address,TSL2561_Control,0x03);  // POWER UP
   delay(14);
   float lux_average = 0;
@@ -79,8 +78,7 @@ void Tsl2561::readSensorData()
     //{ 
      //return;
     //}
-    if(ch0/ch1 < 2 && ch0 > 4900)
-    {
+    if(ch0/ch1 < 2 && ch0 > 4900){
       lux_ = -1;
       return;  //ch0 out of range, but ch1 not. the lux is not valid in this situation
     }
@@ -94,14 +92,13 @@ void Tsl2561::readSensorData()
 }
 
 float Tsl2561::getData(void){
-   _light_illuminance = lux_;
-   _send_light_illuminance = true;
-   return (_light_illuminance);
-   delay(1000);
+  _light_illuminance = lux_;
+  _send_light_illuminance = true;
+  return (_light_illuminance);
+  delay(1000);
 }
 
-uint8_t Tsl2561::readRegister(int deviceAddress, int address)
-{
+uint8_t Tsl2561::readRegister(int deviceAddress, int address){
   uint8_t value;
   Wire.beginTransmission(deviceAddress);
   Wire.write(address);                // register to read
@@ -109,7 +106,7 @@ uint8_t Tsl2561::readRegister(int deviceAddress, int address)
   Wire.requestFrom(deviceAddress, 1); // read a byte
   uint32_t start_time = millis();
   //while(!Wire.available()){
-    if (millis() - start_time > read_register_timeout_) {
+    if (millis() - start_time > read_register_timeout_){
       read_register_error_ = 1;
       return 0;
     }
@@ -118,8 +115,7 @@ uint8_t Tsl2561::readRegister(int deviceAddress, int address)
   return value;
 }
 
-void Tsl2561::writeRegister(int deviceAddress, int address, uint8_t val)
-{
+void Tsl2561::writeRegister(int deviceAddress, int address, uint8_t val){
   Wire.beginTransmission(deviceAddress);  // start transmission to device
   Wire.write(address);                    // send register address
   Wire.write(val);                        // send value to write
@@ -127,8 +123,7 @@ void Tsl2561::writeRegister(int deviceAddress, int address, uint8_t val)
   //delay(100);
 }
 
-void Tsl2561::getLux(void)
-{
+void Tsl2561::getLux(void){
   CH0_LOW=readRegister(_TSL2561_Address,TSL2561_Channal0L);
   CH0_HIGH=readRegister(_TSL2561_Address,TSL2561_Channal0H);
   
@@ -140,10 +135,8 @@ void Tsl2561::getLux(void)
   ch1 = (CH1_HIGH<<8) | CH1_LOW;
 }
 
-unsigned long Tsl2561::calculateLux(unsigned int iGain, unsigned int tInt,int iType)
-{
- switch (tInt)
- {
+unsigned long Tsl2561::calculateLux(unsigned int iGain, unsigned int tInt,int iType){
+ switch (tInt){
   case 0:  // 13.7 msec
   chScale = CHSCALE_TINT0;
   break;
@@ -153,7 +146,7 @@ unsigned long Tsl2561::calculateLux(unsigned int iGain, unsigned int tInt,int iT
   default: // assume no scaling
   chScale = (1 << CH_SCALE);
   break;
-}
+ }
 if (!iGain)  chScale = chScale << 4; // scale 1X to 16X
 // scale the channel values
 channel0 = (ch0 * chScale) >> CH_SCALE;
@@ -164,9 +157,8 @@ channel1 = (ch1 * chScale) >> CH_SCALE;
 // round the ratio value
  unsigned long ratio = (ratio1 + 1) >> 1;
 
- switch (iType)
- {
- case 0: // T package
+ switch (iType){
+   case 0: // T package
    if ((ratio >= 0) && (ratio <= K1T))
     {b=B1T; m=M1T;}
    else if (ratio <= K2T)
@@ -206,4 +198,4 @@ channel1 = (ch1 * chScale) >> CH_SCALE;
   // strip off fractional portion
   lux = temp>>LUX_SCALE;
   return (lux);
- }
+}
