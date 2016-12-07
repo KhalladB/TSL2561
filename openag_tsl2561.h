@@ -117,7 +117,7 @@ class Tsl2561: public Module {
   bool _send_light_illuminance;
   uint32_t _time_of_last_query;
   bool _waiting_for_conversion;
-  const static uint32_t _min_update_interval = 2500;
+  const static uint32_t _min_update_interval = 2250;
   int _TSL2561_Address = TSL2561_Address;
   
 };
